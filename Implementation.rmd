@@ -1,0 +1,75 @@
+---
+title: "Implementation V2"
+author: "Sharath Chandra S"
+date: "2024-10-09"
+output: html_document
+---
+
+```{r, warning=FALSE}
+library(R6)
+library(readxl)
+library(RPostgres)
+library(gtools)
+library(lubridate)
+library(stringr)
+library(zoo)
+library(tidyverse)
+library(dplyr)
+```
+
+# Connection To he Database
+```{r, warning=FALSE, message=FALSE}
+conn <- DBI::dbConnect(RPostgres::Postgres(),
+                      dbname = 'rwe',host = "_____________________________________________",
+                      port = "_______________________",
+                      user = "_______________________",
+                      password = "_______________________")
+
+knitr::opts_chunk$set(connection = "conn")
+
+
+package_path <- "______________________________"
+
+remove.packages("LOTGenerator")  
+devtools::document(package_path)
+devtools::build(package_path)
+devtools::install(package_path)
+```
+
+```{r}
+library(LOTAutomater) 
+```
+
+# Create The Object
+```{r, warning=FALSE, message=FALSE}
+my_lot <- LOTGenerator$new(conn = conn, schema = "______________________", 
+                              file_path = "_____________________",
+                              identifier = 'shara')
+```
+
+# Preparing the Data
+```{r, warning=FALSE, message=FALSE}
+my_lot$generate_data()
+```
+# Create Therapy Episodes
+```{r, warning=FALSE, message=FALSE}
+my_lot$episodes()
+```
+# Create Therapy Regimens
+```{r, warning=FALSE, message=FALSE}
+my_lot$regimens()
+```
+# Create Therapy lines
+```{r, warning=FALSE, message=FALSE}
+my_lot$lines()
+```
+
+# Add Line Setting & Seq
+```{r, warning=FALSE, message=FALSE}
+my_lot$setting()
+```
+
+# Fix Your LOT
+```{r, warning=FALSE, message=FALSE}
+my_lot$fix_LOT(input_table = 'shara_setting')
+```
